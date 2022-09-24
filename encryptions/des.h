@@ -1,0 +1,1 @@
+char* des(char* string);
