@@ -1,4 +1,16 @@
 import codecs
+from encryptions.contracts.encryption import Encryption
+
+
+class RC4(Encryption):
+    def encrypt(key: str, plain_text: bytes) -> bytes:
+        """Kode untuk melakukan encrypt"""
+        pass
+
+    def decrypt(key: str, cipher_text: bytes) -> bytes:
+        """Kode untuk melakukan decrypt"""
+        pass
+
 
 def KSA(key):
     key_length = len(key)
@@ -27,6 +39,7 @@ def get_keystream(key):
     S = KSA(key)
     return PRGA(S)
 
+
 def encrypt(key, text):
 
     key = [ord(c) for c in key]
@@ -40,11 +53,12 @@ def encrypt(key, text):
         res.append(val)
     return ''.join(res)
 
+
 def decrypt(key, text):
     text = codecs.decode(text, 'hex_codec')
 
     key = [ord(c) for c in key]
-    
+
     keystream = get_keystream(key)
 
     res = []
