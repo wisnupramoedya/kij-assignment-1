@@ -1,1 +1,0 @@
-char* aes(char* string);
