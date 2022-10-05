@@ -1,5 +1,5 @@
 import codecs
-from contracts.encryption import Encryption
+from encryptions.contracts.encryption import Encryption
 
 
 class RC4(Encryption):

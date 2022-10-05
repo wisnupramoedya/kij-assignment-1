@@ -1,4 +1,4 @@
-from contracts.encryption import Encryption
+from encryptions.contracts.encryption import Encryption
 
 
 class AES(Encryption):
@@ -231,16 +231,16 @@ class AES(Encryption):
         return s
 
 
-aes = AES()
-key = 'abcdefgh'
-plaintext = b'gwehbanget'
-# plaintext = 0xa03af3563595450ffb15a093690675b3
-
-encr = aes.encrypt(key, plaintext)
-decr = aes.decrypt(key, encr)
-
-print(hex(encr))
-print(decr)
+# aes = AES()
+# key = 'abcdefgh'
+# plaintext = b'gwehbanget'
+# # plaintext = 0xa03af3563595450ffb15a093690675b3
+#
+# encr = aes.encrypt(key, plaintext)
+# decr = aes.decrypt(key, encr)
+#
+# print(hex(encr))
+# print(decr)
 
 # print(type(encr))
 # print(type(decr))

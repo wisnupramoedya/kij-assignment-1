@@ -1,5 +1,5 @@
 import codecs
-from contracts.encryption import Encryption
+from encryptions.contracts.encryption import Encryption
 
 
 class DES(Encryption):
@@ -230,11 +230,11 @@ class DES(Encryption):
         return ans
 
 
-xx = DES()
-kunci = 'abcdefgh'
-in_key = xx.process_key(kunci)
-ptex = b'akuanime'
-encr = xx.encrypt(in_key, ptex)
-decr = xx.decrypt(in_key, encr)
-print(xx.hextobin(encr.hex()))
-print(decr)
+# xx = DES()
+# kunci = 'abcdefgh'
+# in_key = xx.process_key(kunci)
+# ptex = b'akuanime'
+# encr = xx.encrypt(in_key, ptex)
+# decr = xx.decrypt(in_key, encr)
+# print(xx.hextobin(encr.hex()))
+# print(decr)
