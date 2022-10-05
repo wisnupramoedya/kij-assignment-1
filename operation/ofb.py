@@ -19,6 +19,10 @@ class OFB:
         cipher_text: bytes = b''
         encrypted: bytes = self.encryption_class.encrypt(key, self.IV)
 
+        print(block_text)
+        print(block_text[0])
+        print(encrypted)
+        print(type(encrypted))
         for i in range(len(block_text)):
             new_cipher_text = [chr(ord(a) ^ ord(b))
                                for a, b in zip(block_text[i], encrypted)]
