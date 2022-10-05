@@ -90,14 +90,6 @@ class AES(Encryption):
             for j in range(4):
                 text |= matrix[i][j] << (120 - 8 * (4 * i + j))
 
-        return text
-
-    def matrix_to_text2(self, matrix):
-        text = 0
-        for i in range(4):
-            for j in range(4):
-                text |= matrix[i][j] << (120 - 8 * (4 * i + j))
-
         return self.hexint_to_bytes(text)
 
     def mul(self, a, b):
@@ -172,7 +164,7 @@ class AES(Encryption):
         self.inv_sub_bytes(self.cipher_matrix)
         self.add_round_key(self.cipher_matrix, self.round_keys[:4])
 
-        return self.matrix_to_text2(self.cipher_matrix)
+        return self.matrix_to_text(self.cipher_matrix)
 
     def add_round_key(self, s, k):
         for i in range(4):
@@ -234,7 +226,7 @@ class AES(Encryption):
 # aes = AES()
 # key = 'abcdefgh'
 # plaintext = b'gwehbanget'
-# # plaintext = 0xa03af3563595450ffb15a093690675b3
+# plaintext = 0xa03af3563595450ffb15a093690675b3
 #
 # encr = aes.encrypt(key, plaintext)
 # decr = aes.decrypt(key, encr)
