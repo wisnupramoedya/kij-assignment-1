@@ -1,56 +1,57 @@
 import codecs
-
-MOD = 256
-
-def KSA(key):
-    key_length = len(key)
-
-    S = list(range(MOD))
-    j = 0
-    for i in range(MOD):
-        j = (j + S[i] + key[i % key_length]) % MOD
-        S[i], S[j] = S[j], S[i]  # swap values
-
-    return S
+from contracts.encryption import Encryption
 
 
-def PRGA(S):
-    i = 0
-    j = 0
-    while True:
-        i = (i + 1) % MOD
-        j = (j + S[i]) % MOD
+class RC4(Encryption):
+    length: int = 32
 
-        S[i], S[j] = S[j], S[i]  # swap values
-        K = S[(S[i] + S[j]) % MOD]
-        yield K
+    def KSA(self, key: str):
+        key_length = len(key)
 
-def get_keystream(key):
-    S = KSA(key)
-    return PRGA(S)
+        S = list(range(self.length))
+        j = 0
+        for i in range(self.length):
+            j = (j + S[i] + key[i % key_length]) % self.length
+            S[i], S[j] = S[j], S[i]  # swap values
 
+        return S
 
-def encrypt(key, text):
-    key = [ord(c) for c in key]
-    text = [ord(c) for c in text]
+    def PRGA(self, S: list[int]):
+        i = 0
+        j = 0
+        while True:
+            i = (i + 1) % self.length
+            j = (j + S[i]) % self.length
 
-    keystream = get_keystream(key)
+            S[i], S[j] = S[j], S[i]  # swap values
+            K = S[(S[i] + S[j]) % self.length]
+            yield K
 
-    res = []
-    for c in text:
-        val = ("%02X" % (c ^ next(keystream)))  # XOR and taking hex
-        res.append(val)
-    return ''.join(res)
+    def get_keystream(self, key: str):
+        S = self.KSA(key)
+        return self.PRGA(S)
 
-def decrypt(key, text):
-    text = codecs.decode(text, 'hex_codec')
+    def encrypt(self, key: str, text: bytes) -> bytes:
+        key = [ord(c) for c in key]
+        text = [ord(c) for c in text]
 
-    key = [ord(c) for c in key]
+        keystream = self.get_keystream(key)
 
-    keystream = get_keystream(key)
+        res = []
+        for c in text:
+            val = ("%02X" % (c ^ next(keystream)))  # XOR and taking hex
+            res.append(val)
+        return ''.join(res)
 
-    res = []
-    for c in text:
-        val = ("%02X" % (c ^ next(keystream)))  # XOR and taking hex
-        res.append(val)
-    return codecs.decode(''.join(res), 'hex_codec').decode('utf-8')
+    def decrypt(self, key: str, text: bytes) -> bytes:
+        text = codecs.decode(text, 'hex_codec')
+
+        key = [ord(c) for c in key]
+
+        keystream = self.get_keystream(key)
+
+        res = []
+        for c in text:
+            val = ("%02X" % (c ^ next(keystream)))  # XOR and taking hex
+            res.append(val)
+        return codecs.decode(''.join(res), 'hex_codec').decode('utf-8')

@@ -1,58 +1,48 @@
-from typing import Callable
-
+from ..encryptions.contracts.encryption import Encryption
 
 class OFB:
     IV: str
-    BLOCKSIZE: int = 128
+    encryption_class: Encryption
 
     def __init__(self, IV: str) -> None:
         self.IV = IV
 
-    def encrypt(self, key: str, plain_text: str, encryption: Callable[[str, str], str]):
-        block_text = [plain_text[i*self.BLOCKSIZE: (i+1)*self.BLOCKSIZE]
-                      for i in range(int(len(plain_text)/self.BLOCKSIZE))]
+    def set_class(self, encryption_class: Encryption):
+        self.encryption_class = encryption_class
+        return self
 
-        cipher_text: str = ''
-        encrypted: str = encryption(key, self.IV)
+    def encrypt(self, key: str, plain_text: bytes):
+        block_size = self.encryption_class.length
+        block_text = [plain_text[i*block_size: (i+1)*block_size]
+                      for i in range(int(len(plain_text)/block_size))]
+
+        cipher_text: bytes = b''
+        encrypted: bytes = self.encryption_class.encrypt(key, self.IV)
         print(encrypted)
 
         for i in range(len(block_text)):
             new_cipher_text = [chr(ord(a) ^ ord(b))
                                for a, b in zip(block_text[i], encrypted)]
             cipher_text += "".join(new_cipher_text)
-            encrypted = encryption(encrypted, self.IV)
+            encrypted = self.encryption_class.encrypt(encrypted, self.IV)
             print(encrypted)
             print('Cipher' + cipher_text)
 
         return cipher_text
 
-    def decrypt(self, key: str, cipher_text: str, decryption: Callable[[str, str], str]):
-        block_text = [cipher_text[i*self.BLOCKSIZE: (i+1)*self.BLOCKSIZE]
-                      for i in range(int(len(plain_text)/self.BLOCKSIZE))]
+    def decrypt(self, key: str, cipher_text: bytes):
+        block_size = self.encryption_class.length
+        block_text = [cipher_text[i*block_size: (i+1)*block_size]
+                      for i in range(int(len(plain_text)/block_size))]
 
-        plain_text: str = ''
-        decrypted: str = decryption(key, self.IV)
+        plain_text: bytes = ''
+        decrypted: bytes = self.encryption_class.decrypt(key, self.IV)
 
         for i in range(len(block_text)):
             new_plain_text = [chr(ord(a) ^ ord(b))
                               for a, b in zip(block_text[i], decrypted)]
             plain_text += "".join(new_plain_text)
-            decrypted = decryption(decrypted, self.IV)
+            decrypted = self.encryption_class.decrypt(decrypted, self.IV)
 
         return plain_text
 
-
-def encryption(key: str, text: str) -> str:
-    cipher_text: str = ''
-    for i in range(len(text)):
-        cipher_text += chr(ord(text[i]) + ord(key[i % len(key)]) - 96)
-
-    return cipher_text
-
-
-key = "aaa"
-text = "halosayawisnu"
-
-print(encryption("aaa", "halosayawisnu"))
-ofb = OFB("aaaaaa")
-print(ofb.encrypt(key, text, encryption))

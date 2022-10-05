@@ -1,4 +1,6 @@
 class Encryption:
+    length: int
+    
     def encrypt(self, key: str, plain_text: bytes) -> bytes:
         """Kode untuk melakukan encrypt"""
         pass
