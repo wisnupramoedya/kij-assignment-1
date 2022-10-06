@@ -18,3 +18,9 @@ pip install -r requirements.txt
 ```
 pip3 freeze > requirements.txt
 ```
+
+## How to Run
+1. Start the program
+```
+./Scripts/python main.py
+```
