@@ -4,27 +4,27 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="main.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='main.css') }}">
     <title>Encrypt + Decrypt File</title>
 </head>
 <body>
-    <form action method="POST" enctype="multipart/form-data">
+    <form action="{{ url_for('encryption_controller.encrypt') }}" method="post" enctype="multipart/form-data">
         <h1><strong>File Upload</strong></h1>
         <div class="form-group">
-            <label for="title">Encryption / Decryption Type</span></label>
-            <select class="form-controll">
-                <option>AES</option>
-                <option>RC4</option>
-                <option>DES</option>
+            <label for="title">Encryption / Decryption Type</label>
+            <select class="form-controll" name="encryption_type">
+                <option value="1">AES</option>
+                <option value="2">DES</option>
+                <option value="3">RC4</option>
             </select>
         </div>
         <div class="form-group">
-            <label for="caption">Key</span></label>
-            <input type="text" name="caption" id="caption" class="form-controll"/>
+            <label for="key">Key</label>
+            <input type="text" name="key" id="key" class="form-controll"/>
         </div>
         <div class="form-group file-area">
             <label for="images">Files</label>
-            <input type="file" name="images" id="images" required="required" class="form-controll"/>
+            <input type="file" name="uploaded_file" id="images" required="required" class="form-controll"/>
         </div>
         <div class="form-group">
             <button type="submit">Upload Files</button>
