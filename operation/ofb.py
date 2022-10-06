@@ -19,15 +19,18 @@ class OFB:
         cipher_text: bytes = b''
         encrypted: bytes = self.encryption_class.encrypt(key, self.IV)
 
-        print(block_text)
-        print(block_text[0])
-        print(encrypted)
-        print(type(encrypted))
+        # print(block_text)
+        # print(block_text[0])
+        # print(type(block_text[0]))
+        # print(encrypted)
+        # print(type(encrypted))
         for i in range(len(block_text)):
-            new_cipher_text = [chr(ord(a) ^ ord(b))
+            new_cipher_text = [bytes(a ^ b)
                                for a, b in zip(block_text[i], encrypted)]
             cipher_text += b''.join(new_cipher_text)
-            encrypted = self.encryption_class.encrypt(encrypted, self.IV)
+
+            # error: UnicodeDecodeError: 'utf-8' codec can't decode byte 0xee in position 0: invalid continuation byte
+            encrypted = self.encryption_class.encrypt(encrypted.decode("utf-8"), self.IV)
 
         return cipher_text
 
@@ -40,7 +43,7 @@ class OFB:
         decrypted: bytes = self.encryption_class.decrypt(key, self.IV)
 
         for i in range(len(block_text)):
-            new_plain_text = [chr(ord(a) ^ ord(b))
+            new_plain_text = [bytes(ord(a) ^ ord(b))
                               for a, b in zip(block_text[i], decrypted)]
             plain_text += b''.join(new_plain_text)
             decrypted = self.encryption_class.decrypt(decrypted, self.IV)
