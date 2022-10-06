@@ -7,7 +7,7 @@ app.register_blueprint(encryption_controller)
 app.config[Config.UPLOAD_FOLDER.name] = Config.UPLOAD_FOLDER.value
 @app.route("/")
 def show():
-    return render_template('index.html')
+    return render_template('post.html')
 
 
 if __name__ == "__main__":

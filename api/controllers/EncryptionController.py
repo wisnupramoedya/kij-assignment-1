@@ -3,6 +3,7 @@ from werkzeug.datastructures import CombinedMultiDict
 from api.common.url import Url
 from api.request.upload_encryption import UploadEncryptionRequest
 from api.services.UploadFileService import UploadFileService
+from api.common.encryption import Type, EncryptionType
 
 encryption_controller = Blueprint('encryption_controller', __name__)
 
@@ -26,7 +27,7 @@ def encrypt():
         if uploaded_file.filename == '':
             return jsonify(status_code=400, message='file not found'), 400
 
-        encrypted_file_path = UploadFileService.upload_file(uploaded_file)
+        encrypted_file_path = UploadFileService.upload_file(uploaded_file, Type.ENCRYPT.value, encryption_type, key)
 
         return jsonify(status_code=200, data={'encrypted_file': encrypted_file_path}, message='file uploaded successfully'), 200
 
@@ -49,6 +50,6 @@ def decrypt():
         if uploaded_file.filename == '':
             return jsonify(status_code=400, message='file not found'), 400
 
-        decrypted_file_path = UploadFileService.upload_file(uploaded_file)
+        decrypted_file_path = UploadFileService.upload_file(uploaded_file, Type.DECRYPT.value, encryption_type, key)
 
         return jsonify(status_code=200, data={'encrypted_file': decrypted_file_path}, message='file uploaded successfully'), 200
