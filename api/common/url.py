@@ -8,3 +8,5 @@ class Url(Enum):
     ENCRYPTED_URL = "/encrypted"
     DECRYPT_URL = "/decrypt"
     DECRYPTED_URL = "/decrypted"
+
+    ALL_UPLOADED_URL = "/all"

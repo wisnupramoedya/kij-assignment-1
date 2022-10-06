@@ -1,4 +1,4 @@
-from flask import Blueprint, request, redirect, current_app, jsonify, url_for
+from flask import Blueprint, request, redirect, current_app, jsonify, url_for, Response
 from werkzeug.datastructures import CombinedMultiDict
 from api.common.url import Url
 from api.request.upload_encryption import UploadEncryptionRequest
@@ -36,7 +36,7 @@ def decrypt():
     """
     Url: /decrypt
     This used to upload file to be decrypted by server.
-    Still need to add thread service for encryption
+    Still need to add thread service for decryption
     """
     if request.method == 'POST':
         form: UploadEncryptionRequest = UploadEncryptionRequest(CombinedMultiDict((request.form, request.files)))
@@ -53,3 +53,22 @@ def decrypt():
         decrypted_file_path = UploadFileService.upload_file(uploaded_file, Type.DECRYPT.value, encryption_type, key)
 
         return jsonify(status_code=200, data={'encrypted_file': decrypted_file_path}, message='file uploaded successfully'), 200
+
+@encryption_controller.route(Url.ALL_UPLOADED_URL.value, methods=[Url.GET.value])
+def get_all():
+    if request.method == 'GET':
+        storages = UploadFileService.get_all_uploaded_file()
+
+        if len(storages) == 0:
+            return Response(
+                '{"status_code": 404, "data": {"storages": ' + storages.to_json() + '}, "mesagge": "storage\'s data is not found"}',
+                mimetype='application/json',
+                status=404
+            )
+
+        return Response(
+            '{"status_code": 200, "data": {"storages": ' + storages.to_json() + '}, "mesagge": "get all storage\'s data successfully"}',
+            mimetype='application/json',
+            status=200
+        )
+

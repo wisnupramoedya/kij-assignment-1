@@ -29,3 +29,8 @@ class UploadFileService:
         StatisticData(type=type, encryption_type=encryption_type, nanoseconds=process_time, size=filesize).save()
 
         return url_for('static', filename=Config.STORAGE.value + path.name)
+
+    @staticmethod
+    def get_all_uploaded_file():
+        storages = Storage.objects()
+        return storages
