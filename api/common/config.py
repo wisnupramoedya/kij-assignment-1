@@ -1,6 +1,8 @@
 from distutils.command.upload import upload
 from enum import Enum
+import os
 
 
 class Config(Enum):
-    UPLOAD_FOLDER = "/api/statics"
+    STORAGE = "storages/"
+    UPLOAD_FOLDER = "api/statics/" + STORAGE

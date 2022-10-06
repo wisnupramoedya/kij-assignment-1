@@ -1,3 +1,4 @@
 Lib/site-packages
 __pycache__
 .idea
+api/statics/storages
