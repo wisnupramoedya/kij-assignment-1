@@ -1,4 +1,10 @@
 Lib/site-packages
+node_modules/*
+
 __pycache__
 .idea
-api/statics/storages
+
+api/statics/storages/*
+api/statics/.webassets-cache
+api/statics/dist
+

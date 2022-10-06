@@ -19,6 +19,17 @@ pip install -r requirements.txt
 pip3 freeze > requirements.txt
 ```
 
+## How to Install Tailwind
+1. Run npm install
+```
+npm install
+```
+
+2. Install this postcss globally
+```
+npm install --global postcss postcss-cli
+```
+
 ## How to Run
 1. Start the program
 ```
