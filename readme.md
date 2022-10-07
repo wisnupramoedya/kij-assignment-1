@@ -1,6 +1,9 @@
 # Project API SocketIO Flask for Encryption
 
-Created with :gift_heart: by daffa.info
+Created with :gift_heart: by daffa.cymru
+
+## Requirements
+- MongoDB
 
 ## How to Prepare
 
@@ -35,3 +38,6 @@ npm install --global postcss postcss-cli
 ```
 ./Scripts/python main.py
 ```
+
+## API Documentation
+The API is documented in Postman [here](https://documenter.getpostman.com/view/12334932/2s83zgtjKv)

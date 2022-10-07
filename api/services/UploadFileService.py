@@ -25,6 +25,8 @@ class UploadFileService:
         end: int = time.time_ns()
         process_time = end - start
 
+        # bikin thread service buat mindahin file ke folder encrypt atau decrypt tergantung type-nya
+
         Storage(filename=filename, type=type, encryption_type=encryption_type).save()
         StatisticData(type=type, encryption_type=encryption_type, nanoseconds=process_time, size=filesize).save()
 

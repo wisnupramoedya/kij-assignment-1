@@ -30,7 +30,7 @@ class OFB:
             cipher_text += b''.join(new_cipher_text)
 
             # error: UnicodeDecodeError: 'utf-8' codec can't decode byte 0xee in position 0: invalid continuation byte
-            encrypted = self.encryption_class.encrypt(encrypted.decode("utf-8"), self.IV)
+            encrypted = self.encryption_class.encrypt(str(encrypted, "utf-8"), self.IV)
 
         return cipher_text
 
