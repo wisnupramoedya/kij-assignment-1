@@ -21,7 +21,8 @@ class OFB:
                       for i in range(int(len(plain_text) / block_size))]
         # print(len(block_text))
 
-        block_text.append(self.padding(plain_text, block_size))
+        if len(plain_text) % block_size != 0:
+            block_text.append(self.padding(plain_text, block_size))
 
         cipher_text: bytes = b''
         encrypted: bytes = self.encryption_class.encrypt(key, self.IV)
@@ -55,6 +56,8 @@ class OFB:
 
             cipher_text = bytes(block_cipher_text)
 
+        print('done')
+
         return cipher_text
 
     def decrypt(self, key: str, cipher_text: bytes) -> bytes:
@@ -84,6 +87,7 @@ class OFB:
             decrypted = self.encryption_class.encrypt(key, decrypted)
 
         plain_text = bytes(block_plain_text)
+        print('done')
         return plain_text
 
     def xor_strings(self, a, b):
@@ -156,3 +160,5 @@ class OFB:
             temp = codecs.encode(plain_text[(0 - (i + 1)):], 'hex')
             if temp == (val[i] * (i+1)).encode():
                 return plain_text[:(0-(i+1))]
+
+        return plain_text

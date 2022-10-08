@@ -9,6 +9,12 @@ from api.common.config import Config
 from api.repositories.database import Storage, StatisticData
 import time
 
+from encryptions.aes import AES
+from encryptions.des import DES
+from encryptions.rc4 import RC4
+from operation.ofb import OFB
+
+
 class UploadFileService:
     @staticmethod
     def upload_file(uploaded_file: FileStorage, tipe: int, encryption_type: int, key: str) -> str:
@@ -29,11 +35,11 @@ class UploadFileService:
         process_time = end - start
 
         # bikin thread service buat mindahin file ke folder encrypt atau decrypt tergantung type-nya
-        thread = threading.Thread(target=UploadFileService.move_uploaded_file, args=(uploaded_file, tipe, key, path,))
+        thread = threading.Thread(target=UploadFileService.move_uploaded_file, args=(tipe, encryption_type, key, path,))
         thread.start()
 
-        Storage(filename=filename, type=tipe, encryption_type=encryption_type).save()
-        StatisticData(type=tipe, encryption_type=encryption_type, nanoseconds=process_time, size=filesize).save()
+        # Storage(filename=filename, type=tipe, encryption_type=encryption_type).save()
+        # StatisticData(type=tipe, encryption_type=encryption_type, nanoseconds=process_time, size=filesize).save()
 
         return url_for('static', filename=Config.STORAGE.value + path.name)
 
@@ -43,7 +49,14 @@ class UploadFileService:
         return storages
 
     @staticmethod
-    def move_uploaded_file(uploaded_file: FileStorage, tipe: int, key: str, old_path: Path):
+    def move_uploaded_file(tipe: int, encryption_type: int, key: str, old_path: Path):
+        encryption = ''
+        if encryption_type == 1:
+            encryption = AES()
+        elif encryption_type == 2:
+            encryption = DES()
+        elif encryption_type == 3:
+            encryption = RC4()
         if tipe == 1:
             path = os.path.split(old_path)
             new_path = Path(
@@ -52,6 +65,14 @@ class UploadFileService:
                     'Encrypt',
                     path[1]))
             os.replace(old_path, new_path)
+            f = open(new_path, 'rb')
+            content = f.read()
+            cipher_text = OFB(b'isfhryusvby2346_346asddssttkksogicb)adhjuxchbuhwetgsgh__110625sd35gjhv').set_class(encryption).encrypt(key, content)
+            f.close()
+            # print(content)
+            wr = open(new_path, 'wb')
+            wr.write(cipher_text)
+            wr.close()
         else:
             path = os.path.split(old_path)
             new_path = Path(
@@ -60,3 +81,12 @@ class UploadFileService:
                     'Decrypt',
                     path[1]))
             os.replace(old_path, new_path)
+            f = open(new_path, 'rb')
+            content = f.read()
+            cipher_text = OFB(b'isfhryusvby2346_346asddssttkksogicb)adhjuxchbuhwetgsgh__110625sd35gjhv').set_class(
+                encryption).decrypt(key, content)
+            f.close()
+            # print(content)
+            wr = open(new_path, 'wb')
+            wr.write(cipher_text)
+            wr.close()
