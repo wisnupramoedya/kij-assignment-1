@@ -1,7 +1,7 @@
-import binascii
-
+import math
 from encryptions.contracts.encryption import Encryption
 import codecs
+
 
 class OFB:
     IV: bytes
@@ -16,8 +16,12 @@ class OFB:
 
     def encrypt(self, key: str, plain_text: bytes) -> bytes:
         block_size = self.encryption_class.length
-        block_text = [plain_text[i*block_size: (i+1)*block_size]
-                      for i in range(int(len(plain_text)/block_size))]
+        blocks = math.ceil(len(plain_text) / block_size)
+        block_text = [plain_text[i * block_size: (i + 1) * block_size]
+                      for i in range(int(len(plain_text) / block_size))]
+        # print(len(block_text))
+
+        block_text.append(self.padding(plain_text, block_size))
 
         cipher_text: bytes = b''
         encrypted: bytes = self.encryption_class.encrypt(key, self.IV)
@@ -30,7 +34,7 @@ class OFB:
         # utf = encrypted.decode('utf-8',errors='replace')
         # print(utf)
         # print(type(encrypted))
-        test = bytearray(b'')
+        block_cipher_text = bytearray(b'')
         for i in range(len(block_text)):
             # print(f'block_text {i} = {len(block_text[i])}')
             # print(f'encrypted = {len(encrypted)}')
@@ -43,25 +47,26 @@ class OFB:
             new_cipher_text = self.xor(n_block_text, bin_encrypted)
             new_cipher_text = bytes.fromhex(self.bintohex(new_cipher_text))
 
-            test.extend(new_cipher_text)
+            block_cipher_text.extend(new_cipher_text)
 
             # error: UnicodeDecodeError: 'utf-8' codec can't decode byte 0xee in position 0: invalid continuation byte
             # encrypted = self.encryption_class.encrypt(encrypted.decode('utf-8',errors='replace'), self.IV)
             encrypted = self.encryption_class.encrypt(key, encrypted)
 
-            cipher_text = bytes(test)
+            cipher_text = bytes(block_cipher_text)
 
         return cipher_text
 
     def decrypt(self, key: str, cipher_text: bytes) -> bytes:
         block_size = self.encryption_class.length
 
-        block_text = [cipher_text[i*block_size: (i+1)*block_size]
-                      for i in range(int(len(cipher_text)/block_size))]
+        block_text = [cipher_text[i * block_size: (i + 1) * block_size]
+                      for i in range(int(len(cipher_text) / block_size))]
+        # print(int(len(cipher_text) / block_size))
 
         decrypted: bytes = self.encryption_class.encrypt(key, self.IV)
 
-        test = bytearray(b'')
+        block_plain_text = bytearray(b'')
         for i in range(len(block_text)):
             # new_plain_text = [bytes(ord(a) ^ ord(b))
             #                   for a, b in zip(block_text[i], decrypted)]
@@ -71,12 +76,14 @@ class OFB:
             bin_decrypted = self.hextobin(bin_decrypted)
             new_plain_text = self.xor(n_block_text, bin_decrypted)
             new_plain_text = bytes.fromhex(self.bintohex(new_plain_text))
+            if i == len(block_text)-1:
+                new_plain_text = self.unpadding(new_plain_text)
 
-            test.extend(new_plain_text)
+            block_plain_text.extend(new_plain_text)
             # plain_text += b''.join(new_plain_text)
             decrypted = self.encryption_class.encrypt(key, decrypted)
 
-        plain_text = bytes(test)
+        plain_text = bytes(block_plain_text)
         return plain_text
 
     def xor_strings(self, a, b):
@@ -126,3 +133,26 @@ class OFB:
             else:
                 ans = ans + '1'
         return ans
+
+    def padding(self, plain_text, block_size):
+        val = ['01', '02', '03', '04', '05', '06', '07', '08',
+               '09', '0A', '0B', '0C', '0D', '0E', '0F', '10']
+        block_len = int(len(plain_text) / block_size)
+        start = int(block_len * block_size)
+        end = len(plain_text)
+        padded_hex = ''
+        for i in range(start, end):
+            padded_hex = padded_hex + format(plain_text[i], "x")
+
+        padded_hex = padded_hex + (val[start+block_size-end-1]*(start+block_size-end))
+        # print(f'padded: {padded_hex}')
+        return bytes.fromhex(padded_hex)
+
+    def unpadding(self, plain_text):
+        val = ['01', '02', '03', '04', '05', '06', '07', '08',
+               '09', '0a', '0b', '0c', '0d', '0e', '0f', '10']
+
+        for i in range(len(val)):
+            temp = codecs.encode(plain_text[(0 - (i + 1)):], 'hex')
+            if temp == (val[i] * (i+1)).encode():
+                return plain_text[:(0-(i+1))]

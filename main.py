@@ -39,7 +39,7 @@ rc4_obj = RC4()
 # IV = bytes("oniichan", "UTF-8")
 IV = b'oniichan'
 key = "akuadalahlolicon"
-print(key)
+# print(key)
 ofb_mode = OFB(IV).set_class(aes_obj)
 cipher_text = ofb_mode.encrypt(key, text)
 plain_text = ofb_mode.decrypt(key, cipher_text)
@@ -47,7 +47,7 @@ plain_text = ofb_mode.decrypt(key, cipher_text)
 # print(text)
 
 # print(type(text))
-print(cipher_text)
+print(f'cipher_text: {cipher_text}')
 # print(type(cipher_text))
-print(plain_text)
+print(f'plain_text: {plain_text}')
 # print(type(plain_text))
