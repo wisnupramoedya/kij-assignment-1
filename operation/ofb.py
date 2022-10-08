@@ -25,8 +25,8 @@ class OFB:
         # print(type(block_text[0]))
         print(encrypted)
         # print(encrypted.hex())
-        utf = encrypted.decode('utf-8',errors='replace')
-        print(utf)
+        # utf = encrypted.decode('utf-8',errors='replace')
+        # print(utf)
         # print(type(encrypted))
         for i in range(len(block_text)):
             new_cipher_text = [bytes(a ^ b)

@@ -7,16 +7,19 @@ class RC4(Encryption):
 
     def KSA(self, key: str):
         key_length = len(key)
-
-        S = list(range(self.length))
+        S, T = [], []
+        for i in range(0, 256):
+            S.append(i)
+            T.append(ord(key[i % len(key)]))
+            
         j = 0
         for i in range(self.length):
-            j = (j + S[i] + key[i % key_length]) % self.length
+            j = (j + S[i] + T[i]) % self.length
             S[i], S[j] = S[j], S[i]  # swap values
 
         return S
 
-    def PRGA(self, S: list[int]):
+    def PRGA(self, S):
         i = 0
         j = 0
         while True:
@@ -32,14 +35,25 @@ class RC4(Encryption):
         return self.PRGA(S)
 
     def encrypt(self, key: str, text: bytes) -> bytes:
-        key = [ord(c) for c in key]
-        text = [ord(c) for c in text]
+        key_array = []
+        text_array = []
+        
+        key = [format(c) for c in key]
+        text = [format(c) for c in text]
+
+        for texts in text:
+            text_array.insert(0, texts.encode()[0])
+
+        for keys in key:
+            key_array.insert(0, keys.encode()[0])
 
         keystream = self.get_keystream(key)
 
         res = []
         for c in text:
-            val = ("%02X" % (c ^ next(keystream)))  # XOR and taking hex
+            # print(type(c))
+            # print(type(next(keystream)))
+            val = ("%02X" % (int(c) ^ next(keystream)))  # XOR and taking hex
             res.append(val)
         return ''.join(res)
 
