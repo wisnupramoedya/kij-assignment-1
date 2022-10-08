@@ -82,6 +82,20 @@ class DES(Encryption):
 
     def encrypt(self, key: str, plain_text: bytes) -> bytes:
         # print(plain_text)
+        new_key = self.process_key(key)
+        cipher_text = self.encrypt_process(new_key, plain_text)
+
+        return cipher_text
+
+
+    def decrypt(self, key: str, cipher_text: bytes) -> bytes:
+        new_key = self.process_key(key)
+        decrypt_key = new_key[::-1]
+        text = self.encrypt_process(decrypt_key, cipher_text)
+
+        return text
+
+    def encrypt_process(self, key: str, plain_text: bytes) -> bytes:
         plain_text = codecs.encode(plain_text, 'hex')
         plain_text = self.hextobin(plain_text)
         p_text = self.permutasi(plain_text, self.permutasi_awal, len(self.permutasi_awal))
@@ -110,12 +124,6 @@ class DES(Encryption):
         cipher_text = bytes.fromhex(self.bintohex(cipher_text))
 
         return cipher_text
-
-    def decrypt(self, key: str, cipher_text: bytes) -> bytes:
-        decrypt_key = key[::-1]
-        text = self.encrypt(decrypt_key, cipher_text)
-
-        return text
 
     def shift_left(self, key, shift_number):
         tmp = ''
@@ -232,9 +240,9 @@ class DES(Encryption):
 
 # xx = DES()
 # kunci = 'abcdefgh'
-# in_key = xx.process_key(kunci)
+# # in_key = xx.process_key(kunci)
 # ptex = b'akuanime'
-# encr = xx.encrypt(in_key, ptex)
-# decr = xx.decrypt(in_key, encr)
+# encr = xx.encrypt(kunci, ptex)
+# decr = xx.decrypt(kunci, encr)
 # print(xx.hextobin(encr.hex()))
 # print(decr)
