@@ -1,4 +1,5 @@
 from encryptions.contracts.encryption import Encryption
+import codecs
 
 class OFB:
     IV: str
@@ -20,9 +21,12 @@ class OFB:
         encrypted: bytes = self.encryption_class.encrypt(key, self.IV)
 
         # print(block_text)
-        # print(block_text[0])
+        print(block_text[0])
         # print(type(block_text[0]))
-        # print(encrypted)
+        print(encrypted)
+        # print(encrypted.hex())
+        utf = encrypted.decode('utf-8',errors='replace')
+        print(utf)
         # print(type(encrypted))
         for i in range(len(block_text)):
             new_cipher_text = [bytes(a ^ b)
@@ -30,16 +34,16 @@ class OFB:
             cipher_text += b''.join(new_cipher_text)
 
             # error: UnicodeDecodeError: 'utf-8' codec can't decode byte 0xee in position 0: invalid continuation byte
-            encrypted = self.encryption_class.encrypt(str(encrypted, "utf-8"), self.IV)
+            encrypted = self.encryption_class.encrypt(encrypted.decode('utf-8',errors='replace'), self.IV)
 
         return cipher_text
 
     def decrypt(self, key: str, cipher_text: bytes) -> bytes:
         block_size = self.encryption_class.length
+        plain_text: bytes = b''
         block_text = [cipher_text[i*block_size: (i+1)*block_size]
                       for i in range(int(len(plain_text)/block_size))]
 
-        plain_text: bytes = b''
         decrypted: bytes = self.encryption_class.decrypt(key, self.IV)
 
         for i in range(len(block_text)):
