@@ -74,21 +74,21 @@
     <div style="margin-left: 125px;">
         <form action="{{ url_for('encryption_controller.encrypt') }}" method="POST" enctype="multipart/form-data" class="bg-white shadow-md rounded px-8 pt-6 pb-8">
             <div class="mb-5">
-                <label for="title" class="block uppercase tracking-wide text-black-700 text-xs font-bold mb-2">
+                <label for="method" class="block uppercase tracking-wide text-black-700 text-xs font-bold mb-2">
                     Method
                 </label>
-                <select name="encryption_type" id="encryption_type" class="w-full rounded-md border bg-white border-purple-300 py-3 px-6 text-base font-medium outline-none focus:border-purple-500 focus:shadow-md">
+                <select name="method" id="method" class="w-full rounded-md border bg-white border-purple-300 py-3 px-6 text-base font-medium outline-none focus:border-purple-500 focus:shadow-md">
                     <option value="1">Encryption</option>
                     <option value="2">Decryption</option>
                 </select>
             </div>
 
             <div class="mb-5">
-                <label for="enc-type" class="block uppercase tracking-wide text-black-700 text-xs font-bold mb-2">
+                <label for="encryption_type" class="block uppercase tracking-wide text-black-700 text-xs font-bold mb-2">
                     Encryption/Decryption Type
                 </label>
 
-                <select name="enc-type" id="enc-type" class="w-full rounded-md border border-purple-300 bg-white py-3 px-6 text-base font-medium outline-none focus:border-purple-500 focus:shadow-md">
+                <select name="encryption_type" id="encryption_type" class="w-full rounded-md border border-purple-300 bg-white py-3 px-6 text-base font-medium outline-none focus:border-purple-500 focus:shadow-md">
                     <option value="1">AES</option>
                     <option value="2">DES</option>
                     <option value="3">RC4</option>
