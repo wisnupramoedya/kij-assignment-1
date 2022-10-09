@@ -34,7 +34,7 @@ npm install --global postcss postcss-cli
 ```
 
 Note:
-- For some reason, there is problem loading automatics postcss in tailwind. But, for every change, use this.
+- For some reason, there is a problem in loading automatics postcss in tailwind. But, for every change, use this.
 ```
 tailwindcss -i ./api/statics/src/main.css -o ./api/statics/dist/main.css --minify
 ```
