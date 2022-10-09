@@ -25,7 +25,7 @@ class UploadFileService:
             os.path.join(
                 current_app.root_path,
                 current_app.config[Config.UPLOAD_FOLDER.name],
-                str.lower(Type(encryption_type).name),
+                str.lower(Type(tipe).name),
                 secure_filename(uploaded_file.filename)))
         uploaded_file.save(path)
         print(path)
