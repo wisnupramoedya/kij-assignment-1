@@ -1,4 +1,5 @@
 from flask import Blueprint, request, redirect, current_app, jsonify, url_for, Response
+from flask_cors import cross_origin
 from werkzeug.datastructures import CombinedMultiDict
 from api.common.url import Url
 from api.request.upload_encryption import UploadEncryptionRequest
@@ -9,6 +10,7 @@ encryption_controller = Blueprint('encryption_controller', __name__)
 
 
 @encryption_controller.route(Url.ENCRYPT_URL.value, methods=[Url.POST.value])
+@cross_origin()
 def encrypt():
     """
     Url: /encrypt
@@ -32,6 +34,7 @@ def encrypt():
         return jsonify(status_code=200, data={'encrypted_file': encrypted_file_path}, message='file uploaded successfully'), 200
 
 @encryption_controller.route(Url.DECRYPT_URL.value, methods=[Url.POST.value])
+@cross_origin()
 def decrypt():
     """
     Url: /decrypt
@@ -55,6 +58,7 @@ def decrypt():
         return jsonify(status_code=200, data={'encrypted_file': decrypted_file_path}, message='file uploaded successfully'), 200
 
 @encryption_controller.route(Url.ALL_UPLOADED_URL.value, methods=[Url.GET.value])
+@cross_origin()
 def get_all():
     if request.method == 'GET':
         storages = UploadFileService.get_all_uploaded_file()

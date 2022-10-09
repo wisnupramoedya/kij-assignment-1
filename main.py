@@ -1,11 +1,14 @@
 from flask import Flask, render_template
 from flask_assets import Bundle, Environment
+from flask_cors import CORS
 from api.controllers.EncryptionController import encryption_controller
 from api.common.config import Config
 import mongoengine
 
 app = Flask(__name__, static_url_path='/statics', static_folder='api/statics', template_folder='api/templates')
+cors = CORS(app)
 app.register_blueprint(encryption_controller)
+app.config['CORS_HEADERS'] = 'Content-Type'
 app.config[Config.UPLOAD_FOLDER.name] = Config.UPLOAD_FOLDER.value
 
 css = Bundle('src/main.css', output='dist/main.css', filters='postcss')

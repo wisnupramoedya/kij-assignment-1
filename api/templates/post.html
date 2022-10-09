@@ -7,72 +7,25 @@
     {% assets 'main_css' %}
         <link rel="stylesheet" href="{{ ASSET_URL }}">
     {% endassets %}
+    <link rel="stylesheet" href="https://unpkg.com/flowbite@1.5.3/dist/flowbite.min.css" />
     <title>Encrypt + Decrypt File</title>
     <link rel="icon" type="image/png" href="https://img.icons8.com/color/480/000000/lock--v1.png">
 </head>
 <body class="h-screen flex items-center justify-center bg-indigo-800">
-    <div class="bg-white shadow-md rounded overflow-auto" style="margin-right: 125px; width: 250px; max-height: 350px;">
-        <table class="min-w-max w-full table-auto">
-            <tbody class="text-black-600 text-sm font-light">
-                <tr onclick="popup_key()" class="border-b border-purple-200 cursor-pointer hover:bg-purple-100">
-                    <td class="py-3 px-6 text-left whitespace-nowrap">
-                        <div class="flex flex-col">
-                            <span class="font-semibold">Tes.pdf</span>
-                            <span class="font-normal text-xs">Encrypt - AES</span>
-                        </div>
-                    </td>
-                </tr>
+    <div class="bg-white shadow-md rounded overflow-auto" style="margin-right: 125px; width: 350px; max-height: 350px;">
+        <table class="min-w-max w-full table-auto border-separate border-spacing-2 bg-indigo-100">
+            <tbody id="encrypt-list" class="p-2 text-black-600 text-sm font-light">
 
-                <tr onclick="popup_key()" class="border-b border-purple-200 cursor-pointer hover:bg-purple-100">
-                    <td class="py-3 px-6 text-left whitespace-nowrap">
-                        <div class="flex flex-col">
-                            <span class="font-semibold">Tes.pdf</span>
-                            <span class="font-normal text-xs">Encrypt - AES</span>
-                        </div>
-                    </td>
-                </tr>
-
-                <tr onclick="popup_key()" class="border-b border-purple-200 cursor-pointer hover:bg-purple-100">
-                    <td class="py-3 px-6 text-left whitespace-nowrap">
-                        <div class="flex flex-col">
-                            <span class="font-semibold">Tes.pdf</span>
-                            <span class="font-normal text-xs">Encrypt - AES</span>
-                        </div>
-                    </td>
-                </tr>
-
-                <tr onclick="popup_key()" class="border-b border-purple-200 cursor-pointer hover:bg-purple-100">
-                    <td class="py-3 px-6 text-left whitespace-nowrap">
-                        <div class="flex flex-col">
-                            <span class="font-semibold">Tes.pdf</span>
-                            <span class="font-normal text-xs">Encrypt - AES</span>
-                        </div>
-                    </td>
-                </tr>
-
-                <tr onclick="popup_key()" class="border-b border-purple-200 cursor-pointer hover:bg-purple-100">
-                    <td class="py-3 px-6 text-left whitespace-nowrap">
-                        <div class="flex flex-col">
-                            <span class="font-semibold">Tes.pdf</span>
-                            <span class="font-normal text-xs">Encrypt - AES</span>
-                        </div>
-                    </td>
-                </tr>
-
-                <tr onclick="popup_key()" class="border-b border-purple-200 cursor-pointer hover:bg-purple-100">
-                    <td class="py-3 px-6 text-left whitespace-nowrap">
-                        <div class="flex flex-col">
-                            <span class="font-semibold">Tes.pdf</span>
-                            <span class="font-normal text-xs">Encrypt - AES</span>
-                        </div>
-                    </td>
-                </tr>
             </tbody>
         </table>
     </div>
 
     <div style="margin-left: 125px;">
-        <form action="{{ url_for('encryption_controller.encrypt') }}" method="POST" enctype="multipart/form-data" class="bg-white shadow-md rounded px-8 pt-6 pb-8">
+        <form
+                id="encryption-form"
+                method="POST"
+                enctype="multipart/form-data"
+                class="bg-white shadow-md rounded px-8 pt-6 pb-8">
             <div class="mb-5">
                 <label for="method" class="block uppercase tracking-wide text-black-700 text-xs font-bold mb-2">
                     Method
@@ -109,27 +62,115 @@
                         <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
                         </svg>
-                        <span class="font-medium text-gray-500">
+                        <span id="upload-text" class="font-medium text-gray-500">
                             Drop files to attach, or
                             <span class="text-purple-600 underline">browse</span>
                         </span>
                     </span>
 
-                    <input type="file" name="uploaded_file" id="images" required="required" class="hidden">
+                    <input type="file" name="uploaded_file" id="dropzone-file" required="required" class="hidden">
                 </label>
             </div>
 
             <div style="margin-top: 30px;">
-                <button type="submit" class="uppercase shadow bg-indigo-800 hover:bg-indigo-700 rounded-md py-3 px-8 text-xs font-bold text-white outline-none">Submit</button>
+                <button id="submit-form" class="uppercase shadow bg-indigo-800 hover:bg-indigo-700 rounded-md py-3 px-8 text-xs font-bold text-white outline-none">Submit</button>
             </div>
         </form>
     </div>
-
+    <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+    <script src="https://unpkg.com/flowbite@1.5.3/dist/flowbite.js"></script>
     <link href='https://fonts.googleapis.com/css?family=Lato:100,200,300,400,500,600,700' rel='stylesheet' type='text/css'>
     <script>
-        function popup_key() {
-            let person = prompt("Masukkan key:");
+        function popup_key(filename) {
+            console.log(filename);
+            let url = `http://127.0.0.1:5000/statics/storages/${filename}`;
+            window.open(url, '_blank').focus();
         }
+
+        const TypeEnum = {
+            ENCRYPT: 1,
+            DECRYPT: 2
+        }
+
+        const EncryptionType = {
+            AES: 1,
+            DES: 2,
+            RC4: 3
+        }
+
+        function getKeyEnums(enumObject, value) {
+            return Object.keys(enumObject).find(key => enumObject[key] === parseInt(value));
+        }
+
+    </script>
+    <script>
+        function list_to_html(data) {
+            let storages = data.data.storages;
+            let html = '';
+            for (let i = storages.length - 1; i >= 0; i--) {
+                let storage = storages[i];
+                html += `
+                    <tr onclick="popup_key('${storage.filename}')" class="odd:bg-white even:bg-indigo-400 border-b border-purple-200 cursor-pointer hover:bg-purple-100">
+                        <td class="py-3 px-6 text-left whitespace-nowrap">
+                            <div class="flex flex-col">
+                                <span class="font-semibold truncate">${storage.filename}</span>
+                                <span class="font-normal text-xs">
+                                    ${getKeyEnums(TypeEnum, storage.type)} - ${getKeyEnums(EncryptionType, storage.encryption_type)}
+                                </span>
+                            </div>
+                        </td>
+                    </tr>
+                `
+            }
+            return html;
+        }
+
+        function get_list() {
+            $.get("http://localhost:5000/all", function (data, status) {
+                const status_code = data.status_code;
+                switch (status_code) {
+                    case 200:
+                        $("#encrypt-list").html(list_to_html(data));
+                        break;
+                    default:
+                        $("#encrypt-list").html(`<p>Data not found</p>`);
+                }
+            })
+        }
+
+        $(document).ready(function () {
+            get_list();
+            $('#dropzone-file').on("change", function () {
+                let file = $('#dropzone-file')[0].files;
+                if (file.length) {
+                    let filename = `${file[0].name}`;
+                    $('#upload-text').html(`<span class="font-semibold">${filename}</span>`);
+                } else {
+                    $('#upload-text').html(`<span class="font-semibold">Click to upload</span> or drag and drop`);
+                }
+            })
+        })
+    </script>
+    <script>
+        $('form#encryption-form').submit(function (e) {
+            e.preventDefault();
+
+            let formData= new FormData(this);
+            let url = `/${getKeyEnums(TypeEnum, formData.get("method")).toLowerCase()}`;
+
+            $.ajax({
+                url:  url,
+                type: $(this).attr("method"),
+                data: formData,
+                success: function (data) {
+                    alert(data);
+                    get_list();
+                },
+                cache: false,
+                contentType: false,
+                processData: false
+            });
+        });
     </script>
 </body>
 </html>
