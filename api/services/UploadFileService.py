@@ -40,8 +40,8 @@ class UploadFileService:
         thread = threading.Thread(target=UploadFileService.move_uploaded_file, args=(tipe, encryption_type, key, path,))
         thread.start()
 
-        Storage(filename=filename, type=tipe, encryption_type=encryption_type).save()
-        StatisticData(type=tipe, encryption_type=encryption_type, nanoseconds=process_time, size=filesize).save()
+        # Storage(filename=filename, type=tipe, encryption_type=encryption_type).save()
+        # StatisticData(type=tipe, encryption_type=encryption_type, nanoseconds=process_time, size=filesize).save()
 
         return url_for('static', filename=Config.STORAGE.value + path.name)
 

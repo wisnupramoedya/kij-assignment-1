@@ -1,6 +1,9 @@
 import math
 from encryptions.contracts.encryption import Encryption
 import codecs
+from encryptions.aes import AES
+from encryptions.des import DES
+from encryptions.rc4 import RC4
 
 
 class OFB:
@@ -15,6 +18,8 @@ class OFB:
         return self
 
     def encrypt(self, key: str, plain_text: bytes) -> bytes:
+        if isinstance(self.encryption_class, RC4):
+            return self.encryption_class.encrypt(key, plain_text)
         block_size = self.encryption_class.length
         blocks = math.ceil(len(plain_text) / block_size)
         block_text = [plain_text[i * block_size: (i + 1) * block_size]
@@ -61,6 +66,8 @@ class OFB:
         return cipher_text
 
     def decrypt(self, key: str, cipher_text: bytes) -> bytes:
+        if isinstance(self.encryption_class, RC4):
+            return self.encryption_class.decrypt(key, cipher_text)
         block_size = self.encryption_class.length
 
         block_text = [cipher_text[i * block_size: (i + 1) * block_size]

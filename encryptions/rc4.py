@@ -10,7 +10,7 @@ class RC4(Encryption):
         for i in range(0, 256):
             S.append(i)
             T.append(ord(key[i % len(key)]))
-            
+
         j = 0
         for i in range(self.length):
             j = (j + S[i] + T[i]) % self.length
@@ -36,7 +36,7 @@ class RC4(Encryption):
     def encrypt(self, key: str, text: bytes) -> bytes:
         key_array = []
         text_array = []
-        
+
         key = [format(c) for c in key]
         text = [format(c) for c in text]
 
@@ -54,7 +54,8 @@ class RC4(Encryption):
             # print(type(next(keystream)))
             val = ("%02X" % (int(c) ^ next(keystream)))  # XOR and taking hex
             res.append(val)
-        return ''.join(res)
+        print('done')
+        return bytes(''.join(res), 'UTF-8')
 
     def decrypt(self, key: str, text: bytes) -> bytes:
         text = codecs.decode(text, 'hex_codec')
@@ -70,4 +71,5 @@ class RC4(Encryption):
         for c in text:
             val = ("%02X" % (c ^ next(keystream)))  # XOR and taking hex
             res.append(val)
-        return codecs.decode(''.join(res), 'hex_codec').decode('utf-8')
+        print('done')
+        return codecs.decode(''.join(res), 'hex_codec')
