@@ -4,8 +4,8 @@ node_modules/*
 __pycache__
 .idea
 
-api/statics/storages/*
+!api/statics/storages/*
 api/statics/.webassets-cache
 
-!api/statics/storages/encrypt
-!api/statics/storages/decrypt
+api/statics/storages/encrypt/*
+api/statics/storages/decrypt/*

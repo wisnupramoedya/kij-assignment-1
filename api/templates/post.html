@@ -127,7 +127,6 @@
         }
 
         function get_list() {
-            console.log("Hello");
             $.ajax({
                 method: "GET",
                 url: "/all",
@@ -185,7 +184,6 @@
                     alert("Form berhasil terkirim");
                     get_list();
                     socket.send(MESSAGE);
-                    console.log(MESSAGE);
                 },
                 cache: false,
                 contentType: false,

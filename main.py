@@ -13,7 +13,7 @@ app.config['CORS_HEADERS'] = 'Content-Type'
 app.config[Config.UPLOAD_FOLDER.name] = Config.UPLOAD_FOLDER.value
 socketio = SocketIO(app, cors_allowed_origins='*', async_mode='eventlet')
 
-css = Bundle('src/main.css', output='dist/main.css', filters='postcss')
+css = Bundle('src/main.css', output='dist/main.css')
 assets = Environment(app)
 assets.register('main_css', css)
 css.build()

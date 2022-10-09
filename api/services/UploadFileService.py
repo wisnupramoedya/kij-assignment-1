@@ -7,6 +7,7 @@ import os
 from pathlib import Path
 from api.common.config import Config
 from api.repositories.database import Storage, StatisticData
+from api.common.encryption import Type
 import time
 
 from encryptions.aes import AES
@@ -24,6 +25,7 @@ class UploadFileService:
             os.path.join(
                 current_app.root_path,
                 current_app.config[Config.UPLOAD_FOLDER.name],
+                str.lower(Type(encryption_type).name),
                 secure_filename(uploaded_file.filename)))
         uploaded_file.save(path)
         print(path)
@@ -38,8 +40,8 @@ class UploadFileService:
         thread = threading.Thread(target=UploadFileService.move_uploaded_file, args=(tipe, encryption_type, key, path,))
         thread.start()
 
-        # Storage(filename=filename, type=tipe, encryption_type=encryption_type).save()
-        # StatisticData(type=tipe, encryption_type=encryption_type, nanoseconds=process_time, size=filesize).save()
+        Storage(filename=filename, type=tipe, encryption_type=encryption_type).save()
+        StatisticData(type=tipe, encryption_type=encryption_type, nanoseconds=process_time, size=filesize).save()
 
         return url_for('static', filename=Config.STORAGE.value + path.name)
 
@@ -58,35 +60,21 @@ class UploadFileService:
         elif encryption_type == 3:
             encryption = RC4()
         if tipe == 1:
-            path = os.path.split(old_path)
-            new_path = Path(
-                os.path.join(
-                    path[0],
-                    'Encrypt',
-                    path[1]))
-            os.replace(old_path, new_path)
-            f = open(new_path, 'rb')
+            f = open(old_path, 'rb')
             content = f.read()
             cipher_text = OFB(b'isfhryusvby2346_346asddssttkksogicb)adhjuxchbuhwetgsgh__110625sd35gjhv').set_class(encryption).encrypt(key, content)
             f.close()
             # print(content)
-            wr = open(new_path, 'wb')
+            wr = open(old_path, 'wb')
             wr.write(cipher_text)
             wr.close()
         else:
-            path = os.path.split(old_path)
-            new_path = Path(
-                os.path.join(
-                    path[0],
-                    'Decrypt',
-                    path[1]))
-            os.replace(old_path, new_path)
-            f = open(new_path, 'rb')
+            f = open(old_path, 'rb')
             content = f.read()
             cipher_text = OFB(b'isfhryusvby2346_346asddssttkksogicb)adhjuxchbuhwetgsgh__110625sd35gjhv').set_class(
                 encryption).decrypt(key, content)
             f.close()
             # print(content)
-            wr = open(new_path, 'wb')
+            wr = open(old_path, 'wb')
             wr.write(cipher_text)
             wr.close()
