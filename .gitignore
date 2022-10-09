@@ -6,7 +6,6 @@ __pycache__
 
 api/statics/storages/*
 api/statics/.webassets-cache
-api/statics/dist
 
 !api/statics/storages/encrypt
 !api/statics/storages/decrypt
