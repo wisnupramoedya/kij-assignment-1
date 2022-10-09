@@ -82,10 +82,8 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.5.2/socket.io.min.js" integrity="sha512-xzC4RSo+4m1clLhr0pQr6yFjO9bJ0py6+l65SBibI8/pSEU8U4iVZ7xm95WRq8PXw2MKv8SSR3QkqR2jciG5Ug==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <link href='https://fonts.googleapis.com/css?family=Lato:100,200,300,400,500,600,700' rel='stylesheet' type='text/css'>
     <script>
-        function popup_key(filename) {
-            console.log(filename);
-            let url = `http://127.0.0.1:5000/statics/storages/${filename}`;
-            window.open(url, '_blank').focus();
+        function getKeyEnums(enumObject, value) {
+            return Object.keys(enumObject).find(key => enumObject[key] === parseInt(value));
         }
 
         const TypeEnum = {
@@ -99,8 +97,9 @@
             RC4: 3
         }
 
-        function getKeyEnums(enumObject, value) {
-            return Object.keys(enumObject).find(key => enumObject[key] === parseInt(value));
+        function popup_key(filename, encryption_type) {
+            let url = `http://127.0.0.1:5000/statics/storages/${getKeyEnums(TypeEnum, encryption_type).toLowerCase()}/${filename}`;
+            window.open(url, '_blank').focus();
         }
 
     </script>
@@ -111,7 +110,7 @@
             for (let i = storages.length - 1; i >= 0; i--) {
                 let storage = storages[i];
                 html += `
-                    <tr onclick="popup_key('${storage.filename}')" class="odd:bg-white even:bg-indigo-400 border-b border-purple-200 cursor-pointer hover:bg-purple-100">
+                    <tr onclick="popup_key('${storage.filename}', ${storage.type})" class="odd:bg-white even:bg-indigo-400 border-b border-purple-200 cursor-pointer hover:bg-purple-100">
                         <td class="py-3 px-6 text-left whitespace-nowrap">
                             <div class="flex flex-col">
                                 <span class="font-semibold truncate">${storage.filename}</span>
