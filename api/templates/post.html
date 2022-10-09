@@ -68,7 +68,7 @@
                         </span>
                     </span>
 
-                    <input type="file" name="uploaded_file" id="dropzone-file" required="required" class="hidden">
+                    <input type="file" name="uploaded_file" id="dropzone-file"  class="hidden">
                 </label>
             </div>
 
@@ -79,6 +79,7 @@
     </div>
     <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
     <script src="https://unpkg.com/flowbite@1.5.3/dist/flowbite.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.5.2/socket.io.min.js" integrity="sha512-xzC4RSo+4m1clLhr0pQr6yFjO9bJ0py6+l65SBibI8/pSEU8U4iVZ7xm95WRq8PXw2MKv8SSR3QkqR2jciG5Ug==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <link href='https://fonts.googleapis.com/css?family=Lato:100,200,300,400,500,600,700' rel='stylesheet' type='text/css'>
     <script>
         function popup_key(filename) {
@@ -126,32 +127,50 @@
         }
 
         function get_list() {
-            $.get("http://localhost:5000/all", function (data, status) {
-                const status_code = data.status_code;
-                switch (status_code) {
-                    case 200:
-                        $("#encrypt-list").html(list_to_html(data));
-                        break;
-                    default:
-                        $("#encrypt-list").html(`<p>Data not found</p>`);
+            console.log("Hello");
+            $.ajax({
+                method: "GET",
+                url: "/all",
+                dataType: "json",
+                success: function (data) {
+                    $("#encrypt-list").html(list_to_html(data));
+                },
+                error: function () {
+                    $("#encrypt-list").html(`<p class="text-center">Data not found</p>`);
+
                 }
             })
         }
 
         $(document).ready(function () {
             get_list();
-            $('#dropzone-file').on("change", function () {
-                let file = $('#dropzone-file')[0].files;
-                if (file.length) {
-                    let filename = `${file[0].name}`;
-                    $('#upload-text').html(`<span class="font-semibold">${filename}</span>`);
-                } else {
-                    $('#upload-text').html(`<span class="font-semibold">Click to upload</span> or drag and drop`);
-                }
-            })
         })
     </script>
     <script>
+        const socket = io.connect("http://localhost:5000");
+        const MESSAGE = "UPDATE";
+        socket.on("connect", function () {
+            socket.send("User connected");
+        });
+
+        socket.on("message", function (data) {
+            if (data == MESSAGE) {
+                get_list();
+                alert("Terdapat tambahan list!");
+            }
+        });
+    </script>
+    <script>
+        $('#dropzone-file').on("change", function () {
+            let file = $('#dropzone-file')[0].files;
+            if (file.length) {
+                let filename = `${file[0].name}`;
+                $('#upload-text').html(`<span class="font-semibold">${filename}</span>`);
+            } else {
+                $('#upload-text').html(`<span class="font-semibold">Click to upload</span> or drag and drop`);
+            }
+        });
+
         $('form#encryption-form').submit(function (e) {
             e.preventDefault();
 
@@ -163,8 +182,10 @@
                 type: $(this).attr("method"),
                 data: formData,
                 success: function (data) {
-                    alert(data);
+                    alert("Form berhasil terkirim");
                     get_list();
+                    socket.send(MESSAGE);
+                    console.log(MESSAGE);
                 },
                 cache: false,
                 contentType: false,

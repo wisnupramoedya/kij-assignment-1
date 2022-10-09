@@ -1,6 +1,7 @@
 from flask import Flask, render_template
 from flask_assets import Bundle, Environment
 from flask_cors import CORS
+from flask_socketio import SocketIO, send
 from api.controllers.EncryptionController import encryption_controller
 from api.common.config import Config
 import mongoengine
@@ -10,6 +11,7 @@ cors = CORS(app)
 app.register_blueprint(encryption_controller)
 app.config['CORS_HEADERS'] = 'Content-Type'
 app.config[Config.UPLOAD_FOLDER.name] = Config.UPLOAD_FOLDER.value
+socketio = SocketIO(app, cors_allowed_origins='*', async_mode='eventlet')
 
 css = Bundle('src/main.css', output='dist/main.css', filters='postcss')
 assets = Environment(app)
@@ -19,13 +21,18 @@ css.build()
 db = mongoengine
 db.connect("kij_db")
 
+@socketio.on("message")
+def handle_update(data: str):
+    if (data == "UPDATE"):
+        send(data, broadcast=True, include_self=False)
+
 @app.route("/")
 def show():
     return render_template('post.html')
 
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    socketio.run(app, debug=True)
 
 
 # from encryptions.aes import AES
