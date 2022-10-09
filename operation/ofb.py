@@ -146,7 +146,7 @@ class OFB:
         end = len(plain_text)
         padded_hex = ''
         for i in range(start, end):
-            padded_hex = padded_hex + format(plain_text[i], "x")
+            padded_hex = padded_hex + "{0:02x}".format(plain_text[i])
 
         padded_hex = padded_hex + (val[start+block_size-end-1]*(start+block_size-end))
         # print(f'padded: {padded_hex}')
