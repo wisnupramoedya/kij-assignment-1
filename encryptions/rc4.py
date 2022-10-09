@@ -1,9 +1,8 @@
 import codecs
 from encryptions.contracts.encryption import Encryption
 
-
 class RC4(Encryption):
-    length: int = 32
+    length: int = 256
 
     def KSA(self, key: str):
         key_length = len(key)
@@ -59,8 +58,11 @@ class RC4(Encryption):
 
     def decrypt(self, key: str, text: bytes) -> bytes:
         text = codecs.decode(text, 'hex_codec')
+        key_array = []
+        key = [format(c) for c in key]
 
-        key = [ord(c) for c in key]
+        for keys in key:
+            key_array.insert(0, keys.encode()[0])
 
         keystream = self.get_keystream(key)
 

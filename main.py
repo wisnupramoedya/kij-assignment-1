@@ -39,25 +39,30 @@ if __name__ == "__main__":
 # from encryptions.des import DES
 # from encryptions.rc4 import RC4
 # from operation.ofb import OFB
-#
-# # text = bytes("There was no time. He ran out of the door without half the stuff he needed for work, but it didn't matter. He was late and if he didn't make this meeting on time, someone's life may be in danger.", 'UTF-8')
-# text = bytes('akuanime sub569aa', 'UTF-8')
+
+# text = bytes("There was no time. He ran out of the door without half the stuff he needed for work, but it didn't matter. He was late and if he didn't make this meeting on time, someone's life may be in danger.", 'UTF-8')
+# text = bytes('Good work! Your implementation is correct', 'UTF-8')
 # aes_obj = AES()
 # des_obj = DES()
 # rc4_obj = RC4()
-#
+
 # # IV = bytes("oniichan", "UTF-8")
 # IV = b'oniichan'
-# key = "akuadalahlolicon"
+# key = "not-so-random-key"
 # # print(key)
-# ofb_mode = OFB(IV).set_class(aes_obj)
-# cipher_text = ofb_mode.encrypt(key, text)
-# plain_text = ofb_mode.decrypt(key, cipher_text)
-#
-# # print(text)
-#
-# # print(type(text))
+
+# cipher_text = RC4().encrypt(key, text)
+# plain_text = RC4().decrypt(key, cipher_text)
+
+# print(text)
+
+# print(type(text))
 # print(f'cipher_text: {cipher_text}')
-# # print(type(cipher_text))
+# print(type(cipher_text))
 # print(f'plain_text: {plain_text}')
-# # print(type(plain_text))
+# print(type(plain_text))
+
+# test = [format(key[i % len(key)]) for key[i % len(key)] in test]
+
+# for tests in test:
+#     T_Arr.insert(0, tests.encode()[0])
