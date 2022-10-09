@@ -40,8 +40,8 @@ class UploadFileService:
         thread = threading.Thread(target=UploadFileService.move_uploaded_file, args=(tipe, encryption_type, key, path,))
         thread.start()
 
-        # Storage(filename=filename, type=tipe, encryption_type=encryption_type).save()
-        # StatisticData(type=tipe, encryption_type=encryption_type, nanoseconds=process_time, size=filesize).save()
+        Storage(filename=filename, type=tipe, encryption_type=encryption_type).save()
+        StatisticData(type=tipe, encryption_type=encryption_type, nanoseconds=process_time, size=filesize).save()
 
         return url_for('static', filename=Config.STORAGE.value + path.name)
 
@@ -62,7 +62,8 @@ class UploadFileService:
         if tipe == 1:
             f = open(old_path, 'rb')
             content = f.read()
-            cipher_text = OFB(b'isfhryusvby2346_346asddssttkksogicb)adhjuxchbuhwetgsgh__110625sd35gjhv').set_class(encryption).encrypt(key, content)
+            cipher_text = OFB(b'isfhryusvby2346_346asddssttkksogicb)adhjuxchbuhwetgsgh__110625sd35gjhv').set_class(
+                encryption).encrypt(key, content)
             f.close()
             # print(content)
             wr = open(old_path, 'wb')
