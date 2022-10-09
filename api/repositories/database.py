@@ -4,6 +4,7 @@ from api.common.encryption import Type, EncryptionType
 
 class Storage(Document):
     filename = StringField()
+    real_name = StringField()
     type = EnumField(Type, default=Type.ENCRYPT)
     encryption_type = EnumField(EncryptionType, default=EncryptionType.AES)
     created_date = DateTimeField(default=datetime.utcnow())

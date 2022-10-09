@@ -26,7 +26,9 @@ class UploadFileService:
                 current_app.root_path,
                 current_app.config[Config.UPLOAD_FOLDER.name],
                 str.lower(Type(tipe).name),
-                secure_filename(uploaded_file.filename)))
+                secure_filename(time.strftime("%Y%m%d-%H%M%S_") + uploaded_file.filename)))
+
+        real_name = uploaded_file.filename;
         uploaded_file.save(path)
         print(path)
 
@@ -40,7 +42,7 @@ class UploadFileService:
         thread = threading.Thread(target=UploadFileService.move_uploaded_file, args=(tipe, encryption_type, key, path,))
         thread.start()
 
-        Storage(filename=filename, type=tipe, encryption_type=encryption_type).save()
+        Storage(filename=filename, real_name=real_name, type=tipe, encryption_type=encryption_type).save()
         StatisticData(type=tipe, encryption_type=encryption_type, nanoseconds=process_time, size=filesize).save()
 
         return url_for('static', filename=Config.STORAGE.value + path.name)
