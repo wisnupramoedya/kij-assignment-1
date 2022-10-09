@@ -34,7 +34,6 @@ def show():
 if __name__ == "__main__":
     socketio.run(app, debug=True)
 
-
 # from encryptions.aes import AES
 # from encryptions.des import DES
 # from encryptions.rc4 import RC4
@@ -61,8 +60,3 @@ if __name__ == "__main__":
 # print(type(cipher_text))
 # print(f'plain_text: {plain_text}')
 # print(type(plain_text))
-
-# test = [format(key[i % len(key)]) for key[i % len(key)] in test]
-
-# for tests in test:
-#     T_Arr.insert(0, tests.encode()[0])
