@@ -54,11 +54,12 @@ class RC4(Encryption):
             # print(type(next(keystream)))
             val = ("%02X" % (int(c) ^ next(keystream)))  # XOR and taking hex
             res.append(val)
-        print('done')
-        return bytes(''.join(res), 'UTF-8')
+        print (''.join(res))
+        bytes_object = bytes.fromhex(''.join(res))
+        return bytes_object
 
     def decrypt(self, key: str, text: bytes) -> bytes:
-        text = codecs.decode(text, 'hex_codec')
+        # text = codecs.decode(text, 'hex_codec')
         key_array = []
         key = [format(c) for c in key]
 
