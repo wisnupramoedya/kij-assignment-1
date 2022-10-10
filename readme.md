@@ -1,9 +1,11 @@
 # Project API SocketIO Flask for Encryption
 
-Created with :gift_heart: by daffa.cymru
+Created with :gift_heart: by Keluarga Kosimp
 
 ## Requirements
-- MongoDB
+- [MongoDB](https://www.mongodb.com/try/download/community)
+- [NPM](https://nodejs.org/en/download/)
+- [Python3](https://www.python.org/downloads/) or just use in the `Scripts` folder
 
 ## How to Prepare
 
