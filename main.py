@@ -2,15 +2,19 @@ from flask import Flask, render_template
 from flask_assets import Bundle, Environment
 from flask_cors import CORS
 from flask_socketio import SocketIO, send
+from flask_wtf.csrf import CSRFProtect
 from api.controllers.EncryptionController import encryption_controller
 from api.common.config import Config
+import os
 import mongoengine
 
 app = Flask(__name__, static_url_path='/statics', static_folder='api/statics', template_folder='api/templates')
 cors = CORS(app)
 app.register_blueprint(encryption_controller)
 app.config['CORS_HEADERS'] = 'Content-Type'
+app.config['SECRET_KEY'] = os.urandom(32)
 app.config[Config.UPLOAD_FOLDER.name] = Config.UPLOAD_FOLDER.value
+csrf = CSRFProtect(app)
 socketio = SocketIO(app, cors_allowed_origins='*', async_mode='eventlet')
 
 css = Bundle('src/main.css', output='dist/main.css')
