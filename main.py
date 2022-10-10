@@ -39,7 +39,7 @@ if __name__ == "__main__":
 # from encryptions.rc4 import RC4
 # from operation.ofb import OFB
 
-# text = bytes("There was no time. He ran out of the door without half the stuff he needed for work, but it didn't matter. He was late and if he didn't make this meeting on time, someone's life may be in danger.", 'UTF-8')
+# # text = bytes("There was no time. He ran out of the door without half the stuff he needed for work, but it didn't matter. He was late and if he didn't make this meeting on time, someone's life may be in danger.", 'UTF-8')
 # text = bytes('Good work! Your implementation is correct', 'UTF-8')
 # aes_obj = AES()
 # des_obj = DES()
