@@ -39,8 +39,8 @@ class UploadFileService:
         process_time = end - start
 
         # bikin thread service buat mindahin file ke folder encrypt atau decrypt tergantung type-nya
-        # thread = threading.Thread(target=UploadFileService.move_uploaded_file, args=(tipe, encryption_type, key, path,))
-        # thread.start()
+        thread = threading.Thread(target=UploadFileService.move_uploaded_file, args=(tipe, encryption_type, key, path,))
+        thread.start()
 
         Storage(filename=filename, real_name=real_name, type=tipe, encryption_type=encryption_type).save()
         StatisticData(type=tipe, encryption_type=encryption_type, nanoseconds=process_time, size=filesize).save()

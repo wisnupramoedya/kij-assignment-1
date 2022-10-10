@@ -115,7 +115,13 @@
 
         function popup_key(filename, encryption_type) {
             let url = `http://127.0.0.1:5000/statics/storages/${getKeyEnums(TypeEnum, encryption_type).toLowerCase()}/${filename}`;
-            window.open(url, '_blank').focus();
+
+            let link = document.createElement("a");
+            link.setAttribute("download", filename);
+            link.href = url;
+            document.body.appendChild(link);
+            link.click();
+            link.remove();
         }
 
     </script>
