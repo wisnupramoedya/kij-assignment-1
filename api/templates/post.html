@@ -28,32 +28,36 @@
                 class="bg-white shadow-md rounded px-8 pt-6 pb-8">
             <div class="mb-5">
                 <label for="method" class="block uppercase tracking-wide text-black-700 text-xs font-bold mb-2">
-                    Method
+                    Method<span class="text-red-500">*</span>
                 </label>
                 <select name="method" id="method" class="w-full rounded-md border bg-white border-purple-300 py-3 px-6 text-base font-medium outline-none focus:border-purple-500 focus:shadow-md">
                     <option value="1">Encryption</option>
                     <option value="2">Decryption</option>
                 </select>
+                <div data-error="method" class="text-red-500"></div>
             </div>
 
             <div class="mb-5">
                 <label for="encryption_type" class="block uppercase tracking-wide text-black-700 text-xs font-bold mb-2">
-                    Encryption/Decryption Type
+                    Encryption/Decryption Type<span class="text-red-500">*</span>
                 </label>
 
                 <select name="encryption_type" id="encryption_type" class="w-full rounded-md border border-purple-300 bg-white py-3 px-6 text-base font-medium outline-none focus:border-purple-500 focus:shadow-md">
+                    <option disabled selected>Choose Encryption Type</option>
                     <option value="1">AES</option>
                     <option value="2">DES</option>
                     <option value="3">RC4</option>
                 </select>
+                <div data-error="encryption_type" class="text-red-500"></div>
             </div>
 
             <div class="mb-5">
                 <label for="key" class="block uppercase tracking-wide text-black-700 text-xs font-bold mb-2">
-                    Key
+                    Key<span class="text-red-500">*</span>
                 </label>
 
                 <input type="text" name="key" id="key" placeholder="Key" class="w-full rounded-md border border-purple-300 bg-white py-3 px-6 text-base font-medium outline-none focus:border-purple-500 focus:shadow-md">
+                <div data-error="key" class="text-red-500"></div>
             </div>
 
             <div class="max-w-xl">
@@ -64,12 +68,13 @@
                         </svg>
                         <span id="upload-text" class="font-medium text-gray-500">
                             Drop files to attach, or
-                            <span class="text-purple-600 underline">browse</span>
+                            <span class="text-purple-600 underline">browse</span><span class="text-red-500">*</span>
                         </span>
                     </span>
 
-                    <input type="file" name="uploaded_file" id="dropzone-file"  class="hidden">
+                    <input type="file" name="uploaded_file" id="dropzone-file" class="hidden">
                 </label>
+                <div data-error="uploaded_file" class="text-red-500"></div>
             </div>
 
             <div style="margin-top: 30px;">
@@ -169,6 +174,17 @@
             }
         });
 
+        function error_to_html(errors) {
+            Object.keys(errors).forEach(key => {
+                let html = '';
+                errors[key].forEach(error => {
+                    html += `<p>${error}</p>`;
+                });
+
+                $(`div[data-error='${key}']`).html(html);
+            });
+        }
+
         $('form#encryption-form').submit(function (e) {
             e.preventDefault();
 
@@ -180,9 +196,13 @@
                 type: $(this).attr("method"),
                 data: formData,
                 success: function (data) {
-                    alert("Form berhasil terkirim");
                     get_list();
                     socket.send(MESSAGE);
+                    alert("Form berhasil terkirim");
+                },
+                error: function (error) {
+                    let errorJSON = error.responseJSON.message;
+                    error_to_html(errorJSON);
                 },
                 cache: false,
                 contentType: false,
