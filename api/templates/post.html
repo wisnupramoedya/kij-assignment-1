@@ -13,6 +13,17 @@
 </head>
 <body class="h-screen flex items-center justify-center bg-indigo-800">
     <div class="bg-white shadow-md rounded overflow-auto" style="margin-right: 125px; width: 350px; max-height: 350px;">
+        <div class="border-t-2 border-gray-200 px-4 pt-4 mb-2 sm:mb-0">
+              <div class="relative flex">
+                    <div class="absolute right-0 items-center inset-y-0 hidden sm:flex">
+                        <button type="button" onclick="get_list()" class="inline-flex items-center justify-center rounded-lg px-4 py-3 transition duration-500 ease-in-out text-white bg-indigo-500 hover:bg-indigo-400 focus:outline-none">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="h-6 w-6 ml-2 transform rotate-90">
+                                <path d="M13.5 2c-5.621 0-10.211 4.443-10.475 10h-3.025l5 6.625 5-6.625h-2.975c.257-3.351 3.06-6 6.475-6 3.584 0 6.5 2.916 6.5 6.5s-2.916 6.5-6.5 6.5c-1.863 0-3.542-.793-4.728-2.053l-2.427 3.216c1.877 1.754 4.389 2.837 7.155 2.837 5.79 0 10.5-4.71 10.5-10.5s-4.71-10.5-10.5-10.5z"/>
+                            </svg>
+                        </button>
+                    </div>
+              </div>
+        </div>
         <table class="min-w-max w-full table-auto border-separate border-spacing-2 bg-indigo-100">
             <tbody id="encrypt-list" class="p-2 text-black-600 text-sm font-light">
 
@@ -87,7 +98,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.5.2/socket.io.min.js" integrity="sha512-xzC4RSo+4m1clLhr0pQr6yFjO9bJ0py6+l65SBibI8/pSEU8U4iVZ7xm95WRq8PXw2MKv8SSR3QkqR2jciG5Ug==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <link href='https://fonts.googleapis.com/css?family=Lato:100,200,300,400,500,600,700' rel='stylesheet' type='text/css'>
     <script>
-        var csrf_token = "{{ csrf_token() }}";
+        const csrf_token = "{{ csrf_token() }}";
 
         $.ajaxSetup({
             beforeSend: function(xhr, settings) {
@@ -153,18 +164,21 @@
         }
 
         function get_list() {
-            $.ajax({
-                method: "GET",
-                url: "/all",
-                dataType: "json",
-                success: function (data) {
-                    $("#encrypt-list").html(list_to_html(data));
-                },
-                error: function () {
-                    $("#encrypt-list").html(`<p class="text-center">Data not found</p>`);
+            $("#encrypt-list").html(`<p class="text-center">Refreshed</p>`);
 
-                }
-            })
+            setTimeout(() => {
+                $.ajax({
+                    method: "GET",
+                    url: "/all",
+                    dataType: "json",
+                    success: function (data) {
+                        $("#encrypt-list").html(list_to_html(data));
+                    },
+                    error: function () {
+                        $("#encrypt-list").html(`<p class="text-center">Data not found</p>`);
+                    }
+                })
+            }, 1000);
         }
 
         $(document).ready(function () {
@@ -179,7 +193,7 @@
         });
 
         socket.on("message", function (data) {
-            if (data == MESSAGE) {
+            if (data === MESSAGE) {
                 get_list();
                 alert("Terdapat tambahan list!");
             }
@@ -217,7 +231,7 @@
                 url:  url,
                 type: $(this).attr("method"),
                 data: formData,
-                success: function (data) {
+                success: function () {
                     get_list();
                     socket.send(MESSAGE);
                     alert("Form berhasil terkirim");
