@@ -111,19 +111,16 @@ class AES(Encryption):
         for i in range(4, 4 * (self.rounds + 1)):
             self.round_keys.append([])
             if i % 4 == 0:
-                byte = self.round_keys[i - 4][0] ^ self.rcon[i //
-                                                             4] ^ self.sbox[self.round_keys[i - 1][1]]
+                byte = self.round_keys[i - 4][0] ^ self.rcon[i // 4] ^ self.sbox[self.round_keys[i - 1][1]]
                 self.round_keys[i].append(byte)
 
                 for j in range(1, 4):
-                    byte = self.round_keys[i -
-                                           4][j] ^ self.sbox[self.round_keys[i - 1][(j + 1) % 4]]
+                    byte = self.round_keys[i - 4][j] ^ self.sbox[self.round_keys[i - 1][(j + 1) % 4]]
                     self.round_keys[i].append(byte)
 
             else:
                 for j in range(4):
-                    byte = self.round_keys[i -
-                                           4][j] ^ self.round_keys[i - 1][j]
+                    byte = self.round_keys[i - 4][j] ^ self.round_keys[i - 1][j]
                     self.round_keys[i].append(byte)
 
     def encrypt(self, key: str, plaintext: bytes) -> bytes:
@@ -136,8 +133,7 @@ class AES(Encryption):
             self.sub_bytes(self.plain_matrix)
             self.shift_rows(self.plain_matrix)
             self.mix_columns(self.plain_matrix)
-            self.add_round_key(self.plain_matrix,
-                               self.round_keys[4 * i:4 * (i + 1)])
+            self.add_round_key(self.plain_matrix, self.round_keys[4 * i:4 * (i + 1)])
 
         self.sub_bytes(self.plain_matrix)
         self.shift_rows(self.plain_matrix)
@@ -156,8 +152,7 @@ class AES(Encryption):
         for i in range(self.rounds - 1, 0, -1):
             self.inv_shift_rows(self.cipher_matrix)
             self.inv_sub_bytes(self.cipher_matrix)
-            self.add_round_key(self.cipher_matrix,
-                               self.round_keys[4 * i:4 * (i + 1)])
+            self.add_round_key(self.cipher_matrix, self.round_keys[4 * i:4 * (i + 1)])
             self.inv_mix_columns(self.cipher_matrix)
 
         self.inv_shift_rows(self.cipher_matrix)
@@ -167,58 +162,56 @@ class AES(Encryption):
         return self.matrix_to_text(self.cipher_matrix)
 
     def add_round_key(self, s, k):
-        for i in range(4):
-            for j in range(4):
-                s[i][j] ^= k[i][j]
-        return s
+        nb = len(s)
+        new_s = [[None for j in range(4)] for i in range(nb)]
+
+        for i, word in enumerate(s):
+            for j, byte in enumerate(word):
+                new_s[i][j] = byte ^ k[i][j]
+
+        return new_s
 
     def sub_bytes(self, s):
-        for i in range(4):
-            for j in range(4):
-                s[i][j] = self.sbox[s[i][j]]
-        return s
+        return [[self.sbox[byte] for byte in word] for word in s]
 
     def inv_sub_bytes(self, s):
-        for i in range(4):
-            for j in range(4):
-                s[i][j] = self.inv_sbox[s[i][j]]
-        return s
+        return [[self.inv_sbox[byte] for byte in word] for word in s]
 
     def shift_rows(self, s):
-        s[0][1], s[1][1], s[2][1], s[3][1] = s[1][1], s[2][1], s[3][1], s[0][1]
-        s[0][2], s[1][2], s[2][2], s[3][2] = s[2][2], s[3][2], s[0][2], s[1][2]
-        s[0][3], s[1][3], s[2][3], s[3][3] = s[3][3], s[0][3], s[1][3], s[2][3]
-        return s
+        nb = len(s)
+        n = [word[:] for word in s]
+
+        for i in range(nb):
+            for j in range(4):
+                n[i][j] = s[(i + j) % nb][j]
+
+        return n
 
     def inv_shift_rows(self, s):
-        s[0][1], s[1][1], s[2][1], s[3][1] = s[3][1], s[0][1], s[1][1], s[2][1]
-        s[0][2], s[1][2], s[2][2], s[3][2] = s[2][2], s[3][2], s[0][2], s[1][2]
-        s[0][3], s[1][3], s[2][3], s[3][3] = s[1][3], s[2][3], s[3][3], s[0][3]
-        return s
+        nb = len(s)
+        n = [word[:] for word in s]
+
+        for i in range(nb):
+            for j in range(4):
+                n[i][j] = s[(i - j) % nb][j]
+
+        return n
 
     def mix_columns(self, s):
         for i in range(4):
-            s0 = self.mul(0x02, s[i][0]) ^ self.mul(
-                0x03, s[i][1]) ^ s[i][2] ^ s[i][3]
-            s1 = s[i][0] ^ self.mul(0x02, s[i][1]) ^ self.mul(
-                0x03, s[i][2]) ^ s[i][3]
-            s2 = s[i][0] ^ s[i][1] ^ self.mul(
-                0x02, s[i][2]) ^ self.mul(0x03, s[i][3])
-            s3 = self.mul(0x03, s[i][0]) ^ s[i][1] ^ s[i][2] ^ self.mul(
-                0x02, s[i][3])
+            s0 = self.mul(0x02, s[i][0]) ^ self.mul(0x03, s[i][1]) ^ s[i][2] ^ s[i][3]
+            s1 = s[i][0] ^ self.mul(0x02, s[i][1]) ^ self.mul(0x03, s[i][2]) ^ s[i][3]
+            s2 = s[i][0] ^ s[i][1] ^ self.mul(0x02, s[i][2]) ^ self.mul(0x03, s[i][3])
+            s3 = self.mul(0x03, s[i][0]) ^ s[i][1] ^ s[i][2] ^ self.mul(0x02, s[i][3])
             s[i] = [s0, s1, s2, s3]
         return s
 
     def inv_mix_columns(self, s):
         for i in range(4):
-            s0 = self.mul(0x0e, s[i][0]) ^ self.mul(0x0b, s[i][1]) ^ self.mul(
-                0x0d, s[i][2]) ^ self.mul(0x09, s[i][3])
-            s1 = self.mul(0x09, s[i][0]) ^ self.mul(0x0e, s[i][1]) ^ self.mul(
-                0x0b, s[i][2]) ^ self.mul(0x0d, s[i][3])
-            s2 = self.mul(0x0d, s[i][0]) ^ self.mul(0x09, s[i][1]) ^ self.mul(
-                0x0e, s[i][2]) ^ self.mul(0x0b, s[i][3])
-            s3 = self.mul(0x0b, s[i][0]) ^ self.mul(0x0d, s[i][1]) ^ self.mul(
-                0x09, s[i][2]) ^ self.mul(0x0e, s[i][3])
+            s0 = self.mul(0x0e, s[i][0]) ^ self.mul(0x0b, s[i][1]) ^ self.mul(0x0d, s[i][2]) ^ self.mul(0x09, s[i][3])
+            s1 = self.mul(0x09, s[i][0]) ^ self.mul(0x0e, s[i][1]) ^ self.mul(0x0b, s[i][2]) ^ self.mul(0x0d, s[i][3])
+            s2 = self.mul(0x0d, s[i][0]) ^ self.mul(0x09, s[i][1]) ^ self.mul(0x0e, s[i][2]) ^ self.mul(0x0b, s[i][3])
+            s3 = self.mul(0x0b, s[i][0]) ^ self.mul(0x0d, s[i][1]) ^ self.mul(0x09, s[i][2]) ^ self.mul(0x0e, s[i][3])
             s[i] = [s0, s1, s2, s3]
         return s
 
