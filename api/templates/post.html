@@ -131,13 +131,18 @@
             let html = '';
             for (let i = storages.length - 1; i >= 0; i--) {
                 let storage = storages[i];
+                let isDoneEncrypted = storage.done_encrypted;
+                let click = isDoneEncrypted ? `onclick="popup_key('${storage.filename}', ${storage.type})"` : ``;
                 html += `
-                    <tr onclick="popup_key('${storage.filename}', ${storage.type})" class="odd:bg-white even:bg-indigo-400 border-b border-purple-200 cursor-pointer hover:bg-purple-100">
+                    <tr ${click} class="odd:bg-white even:bg-indigo-400 border-b border-purple-200 ${isDoneEncrypted ? 'cursor-pointer': ''} hover:bg-purple-100">
                         <td class="py-3 px-6 text-left whitespace-nowrap">
                             <div class="flex flex-col">
                                 <span class="font-semibold truncate">${storage.real_name}</span>
                                 <span class="font-normal text-xs">
                                     ${getKeyEnums(TypeEnum, storage.type)} - ${getKeyEnums(EncryptionType, storage.encryption_type)}
+                                </span>
+                                <span class="font-bold text-xs ${isDoneEncrypted ? 'text-green-700': 'text-red-500'}">
+                                    ${isDoneEncrypted ? 'Done': 'Processing File'}
                                 </span>
                             </div>
                         </td>
