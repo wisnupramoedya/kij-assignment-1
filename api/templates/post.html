@@ -125,7 +125,7 @@
         }
 
         function popup_key(filename, encryption_type) {
-            let url = `http://127.0.0.1:5000/statics/storages/${getKeyEnums(TypeEnum, encryption_type).toLowerCase()}/${filename}`;
+            let url = `/statics/storages/${getKeyEnums(TypeEnum, encryption_type).toLowerCase()}/${filename}`;
 
             let link = document.createElement("a");
             link.setAttribute("download", filename);
@@ -133,6 +133,13 @@
             document.body.appendChild(link);
             link.click();
             link.remove();
+        }
+
+        function getTimeInString(millisecond) {
+            let splitTime = new Date(millisecond).toISOString().split('T');
+            let date = splitTime[0];
+            let time = splitTime[1].split('.')[0];
+            return `${date} ${time}`;
         }
 
     </script>
@@ -151,6 +158,9 @@
                                 <span class="font-semibold truncate">${storage.real_name}</span>
                                 <span class="font-normal text-xs">
                                     ${getKeyEnums(TypeEnum, storage.type)} - ${getKeyEnums(EncryptionType, storage.encryption_type)}
+                                </span>
+                                <span class="font-normal text-xs">
+                                    ${getTimeInString(storage.created_date.$date)}
                                 </span>
                                 <span class="font-bold text-xs ${isDoneEncrypted ? 'text-green-700': 'text-red-500'}">
                                     ${isDoneEncrypted ? 'Done': 'Processing File'}
@@ -186,7 +196,7 @@
         })
     </script>
     <script>
-        const socket = io.connect("http://localhost:5000");
+        const socket = io.connect(window.location.host);
         const MESSAGE = "UPDATE";
         socket.on("connect", function () {
             socket.send("User connected");

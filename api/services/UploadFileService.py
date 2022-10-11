@@ -83,6 +83,6 @@ class UploadFileService:
 
         # print(end)
         process_time = end - start
-        StatisticData(type=method_type, encryption_type=encryption_type, nanoseconds=process_time, size=filesize).save()
+        StatisticData(filename=filename, type=method_type, encryption_type=encryption_type, nanoseconds=process_time, size=filesize).save()
         Storage.objects(filename=filename).update(done_encrypted=True)
         return
