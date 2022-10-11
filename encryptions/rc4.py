@@ -6,10 +6,11 @@ class RC4(Encryption):
 
     def KSA(self, key: str):
         key_length = len(key)
-        S, T = [], []
+        S = list(range(self.length))
+        T = []
         for i in range(0, 256):
             S.append(i)
-            T.append(ord(key[i % len(key)]))
+            T.append(key[i % len(key)])
 
         j = 0
         for i in range(self.length):
@@ -34,19 +35,19 @@ class RC4(Encryption):
         return self.PRGA(S)
 
     def encrypt(self, key: str, text: bytes) -> bytes:
-        key_array = []
         text_array = []
+        key_array = []
 
         key = [format(c) for c in key]
         text = [format(c) for c in text]
 
-        for texts in text:
-            text_array.insert(0, texts.encode()[0])
+        # for texts in text:
+        #     text_array.insert(0, texts.encode()[0])
 
         for keys in key:
-            key_array.insert(0, keys.encode()[0])
+            key_array.append(ord(keys))
 
-        keystream = self.get_keystream(key)
+        keystream = self.get_keystream(key_array)
 
         res = []
         for c in text:
@@ -63,9 +64,9 @@ class RC4(Encryption):
         key = [format(c) for c in key]
 
         for keys in key:
-            key_array.insert(0, keys.encode()[0])
+            key_array.append(ord(keys))
 
-        keystream = self.get_keystream(key)
+        keystream = self.get_keystream(key_array)
 
         res = []
         for c in text:
