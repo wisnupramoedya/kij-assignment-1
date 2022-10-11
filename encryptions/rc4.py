@@ -54,7 +54,6 @@ class RC4(Encryption):
             # print(type(next(keystream)))
             val = ("%02X" % (int(c) ^ next(keystream)))  # XOR and taking hex
             res.append(val)
-        print (''.join(res))
         bytes_object = bytes.fromhex(''.join(res))
         return bytes_object
 
@@ -72,5 +71,5 @@ class RC4(Encryption):
         for c in text:
             val = ("%02X" % (c ^ next(keystream)))  # XOR and taking hex
             res.append(val)
-        print('done')
+        # print('done')
         return codecs.decode(''.join(res), 'hex_codec')
