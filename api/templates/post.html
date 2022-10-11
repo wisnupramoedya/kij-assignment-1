@@ -136,7 +136,7 @@
         }
 
         function getTimeInString(millisecond) {
-            let splitTime = new Date(millisecond).toISOString().split('T');
+            let splitTime = new Date(millisecond).toLocaleString('id-ID').split('T');
             let date = splitTime[0];
             let time = splitTime[1].split('.')[0];
             return `${date} ${time}`;
