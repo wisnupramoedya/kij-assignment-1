@@ -2,6 +2,11 @@
 
 Created with :gift_heart: by Keluarga Kosimp
 
+- [05111940000018 - Pramudya Tiandana Wisnu Gautama](https://github.com/wisnupramoedya)
+- [05111940000062 - Thomas Felix Brilliant](https://github.com/ThomasFel)
+- [05111940000096 - Stefanus Albert Kosim](https://github.com/yanzkosim)
+- [05111940000175 - Muhammad Daffa](https://github.com/daffainfo)
+
 ## Requirements
 - [MongoDB](https://www.mongodb.com/try/download/community)
 - [NPM](https://nodejs.org/en/download/)
