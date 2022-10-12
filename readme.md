@@ -15,6 +15,7 @@ The image below is the interface of the fullstack app. When starting the project
 ![Image Structure](./assets/ui.png)
 
 For the animation, you could check this animation.
+
 ![How to Use](./assets/animation_proccess.gif)
 
 This project contains the usage of frameworks (except for the algorithm):
